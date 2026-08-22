@@ -1,0 +1,98 @@
+name: Release Skill
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "SKILL.md"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "CONTRIBUTING.md"
+      - "LICENSE"
+      - "references/**"
+      - "examples/**"
+      - "docs/**"
+      - ".github/workflows/release.yml"
+      - ".github/scripts/validate_skill.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: skill-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install validator dependency
+        run: python -m pip install --disable-pip-version-check PyYAML==6.0.2
+
+      - name: Validate Skill and read version
+        id: skill
+        shell: bash
+        run: |
+          python .github/scripts/validate_skill.py SKILL.md
+          VERSION="$(python .github/scripts/validate_skill.py SKILL.md --version-only | tail -n 1)"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=v${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Check for existing release
+        id: existing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.skill.outputs.tag }}
+        shell: bash
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Release $TAG already exists; leaving it immutable."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build portable Skill package
+        if: steps.existing.outputs.exists != 'true'
+        env:
+          VERSION: ${{ steps.skill.outputs.version }}
+        shell: bash
+        run: |
+          PACKAGE="apple-music-personal-curator-${VERSION}"
+          mkdir -p "dist/${PACKAGE}"
+          cp SKILL.md README.md CHANGELOG.md CONTRIBUTING.md LICENSE "dist/${PACKAGE}/"
+          for dir in references examples docs; do
+            if [ -d "$dir" ]; then cp -R "$dir" "dist/${PACKAGE}/"; fi
+          done
+          (cd dist && zip -r "${PACKAGE}.zip" "${PACKAGE}" -x "*.DS_Store")
+
+      - name: Create tag and GitHub Release
+        if: steps.existing.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.skill.outputs.tag }}
+          VERSION: ${{ steps.skill.outputs.version }}
+        shell: bash
+        run: |
+          if ! git rev-parse "$TAG" >/dev/null 2>&1; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Apple Music Personal Curator $TAG"
+            git push origin "$TAG"
+          fi
+
+          gh release create "$TAG" \
+            "dist/apple-music-personal-curator-${VERSION}.zip" \
+            --title "Apple Music Personal Curator ${TAG}" \
+            --generate-notes
