@@ -7,7 +7,7 @@ compatibility: >
   Best with Apple Music catalog search or an equivalent music catalog. Can run without catalog access only in an explicitly unverified candidate-curation mode. Persistent taste learning requires host-supported memory or user-provided history.
 metadata:
   author: "Zuh"
-  version: "1.1.0"
+  version: "1.1.1"
   tags: "music apple-music recommendation playlist curation personalization narrative discovery"
   standard: "Agent Skills"
 ---
