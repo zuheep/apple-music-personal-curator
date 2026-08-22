@@ -3,7 +3,17 @@ name: Validate Skill
 on:
   push:
     branches: [main]
+    paths:
+      - "SKILL.md"
+      - "references/**"
+      - ".github/scripts/validate_skill.py"
+      - ".github/workflows/validate.yml"
   pull_request:
+    paths:
+      - "SKILL.md"
+      - "references/**"
+      - ".github/scripts/validate_skill.py"
+      - ".github/workflows/validate.yml"
 
 permissions:
   contents: read
