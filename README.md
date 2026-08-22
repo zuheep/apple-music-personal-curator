@@ -1,66 +1,122 @@
 # Apple Music Personal Curator
 
-A portable Agent Skill that turns music recommendation into **curation**: multi-cluster taste modeling, controlled discovery, fatigue control, playlist sequencing, catalog verification, and one immersive narrative.
+A portable Agent Skill that turns music recommendation into **curation**: multi-cluster taste modeling, context-aware discovery, fatigue control, adaptive sequencing, catalog verification, and one immersive narrative.
 
-**Current version:** 1.1.1  
+**Current version:** 1.2.0  
 **License:** MIT  
 **Author:** Zuh
 
 ## Why this exists
 
-A playlist can contain 15 individually good songs and still be a bad playlist.
+A playlist can contain individually good songs and still be a bad playlist.
 
 Apple Music Personal Curator treats recommendation as three linked problems:
 
 1. **Selection** — which songs belong together?
 2. **Sequencing** — in what order should they be heard?
-3. **Narrative** — what makes this particular listening session feel intentional?
+3. **Narrative** — what makes this listening session feel intentional?
 
 The goal is not “15 songs you will probably like.” The goal is a session that feels familiar enough to trust, adventurous enough to discover something, and coherent enough to finish.
 
-## What it does
+## What changed in v1.2
 
-- models taste as 3–7 independent **Taste Clusters** instead of one genre label;
-- separates long-term taste, explicit dislike, temporary fatigue, and current context;
-- balances reliable picks, adjacent discovery, and controlled surprise;
-- avoids artist / cluster saturation and recent repetition;
-- builds a larger candidate pool before selecting the final set;
-- sequences the playlist as **Entrance → Expansion → Discovery → Landing**;
-- verifies final tracks and versions against Apple Music or an equivalent catalog;
-- writes one immersive playlist narrative rather than 15 generic mini-reviews;
-- learns from natural-language feedback when the host platform actually provides reusable context or memory.
+This release combines two review perspectives:
 
-Default length: **15 tracks**.
+- **music curation:** stronger curatorial thesis, track roles, context-sensitive taste, adaptive arcs, and intentional transition types;
+- **product design:** capability-aware operating modes, non-blocking scheduled behavior, honest degradation when history or catalog access is missing, and regression evaluation cases.
+
+The result is less rigid while being more reliable.
+
+## Core design
+
+### 1. Capability-aware operation
+
+The Skill first distinguishes:
+
+| Mode | Catalog verification | Prior history / continuity | Behavior |
+|---|---|---|---|
+| A — Verified + continuity | Yes | Yes | Full curation, continuity, repetition control, feedback learning |
+| B — Verified + stateless | Yes | No | Verified curation without invented memory or cross-day deduplication |
+| C — Candidate curation | No | Any | Explicitly unverified draft; never claims playability |
+
+Cold start is handled separately and never requires a long questionnaire.
+
+### 2. Curatorial Brief
+
+Each run forms a short internal brief containing:
+
+- listener state;
+- listening function / context;
+- familiarity versus discovery target;
+- energy trajectory;
+- hard avoids;
+- continuity and catalog status;
+- one **curatorial thesis** explaining why these songs belong together today.
+
+This is a creative compass, not a visible scorecard.
+
+### 3. Multi-cluster taste
+
+The curator keeps 3–7 independent Taste Clusters and separates:
+
+- long-term preference;
+- explicit dislike;
+- temporary fatigue;
+- context-specific preference;
+- short-term state.
+
+“Not for focused work” is not automatically “never recommend.”
+
+### 4. Track roles
+
+Tracks may serve soft roles such as:
+
+**Anchor · Bridge · Pivot · Discovery · Wildcard · Landing**
+
+Roles help create movement without forcing a rigid quota.
+
+### 5. Adaptive sequencing
+
+The default 15-track arc remains:
+
+**Entrance → Expansion → Discovery → Landing**
+
+But shorter and longer playlists preserve the arc instead of mechanically using fixed track numbers. A six-track playlist may compress into **Entry → Turn → Landing**.
+
+Transitions are designed as **Blend, Lift, Contrast, or Reset** rather than treated as accidental adjacency.
 
 ## Quick start
 
 ```text
-给我今天的 Apple Music 歌单。今天下午工作，不想太吵，但也不要纯背景音乐。
+给我今天的 Apple Music 歌单。今天下午工作，不想太吵，但不要纯背景音乐。熟悉感 60%，发现感 40%。
 ```
 
 ```text
-我最近听腻了 Coldplay，但仍然喜欢那种旋律感。不要简单换成几个“相似艺人”，沿 songwriting、制作质感和时代关系往外找。
+我喜欢 Coldplay，但最近听腻了。不要给我一串“相似艺人”，沿旋律写作、制作质感和时代关系往外找。
 ```
 
 ```text
-I loved tracks 3, 6 and 11. Track 8 felt too polished. Keep the same overall taste direction, but increase discovery slightly today.
+我平时喜欢歌词很重的 singer-songwriter，但今天要专注工作。今天少歌词，不代表我长期不喜欢人声。
 ```
+
+More examples: [`examples/prompts.md`](examples/prompts.md).
 
 ## Install in ChatGPT
 
-OpenAI Skills use the Agent Skills open format. In ChatGPT, eligible users can upload a Skill from their computer:
+ChatGPT Skills use the Agent Skills open format. Availability, upload flow, and workspace controls can change by product and plan, so use the current OpenAI documentation as the source of truth:
 
-1. Open **Plugins** in the sidebar.
-2. Open the **Skills** tab.
-3. Choose **Create → Upload from your computer**.
-4. Upload the latest release ZIP, or the extracted `apple-music-personal-curator` folder.
-5. Review the Skill before enabling it.
+<https://help.openai.com/en/articles/20001066-skills-in-chatgpt>
 
-Current OpenAI documentation says Personal Skills are generally available for **ChatGPT Business, Enterprise, Healthcare, and Edu**. Skills are also supported in **Codex and the API**. Personal Skills may need to be added separately across ChatGPT surfaces and may be controlled by workspace settings.
+Typical flow for an eligible account:
 
-Official Skills documentation: <https://help.openai.com/en/articles/20001066-skills-in-chatgpt>
+1. Open **Plugins → Skills**.
+2. Choose **Create → Upload from your computer**.
+3. Upload the latest release ZIP or extracted Skill folder.
+4. Review the Skill before enabling it.
 
-## Requirements and capability boundaries
+The Skill is also portable to other Agent Skills-compatible clients.
+
+## Requirements and boundaries
 
 Best results require an environment that can:
 
@@ -68,19 +124,17 @@ Best results require an environment that can:
 - search Apple Music or an equivalent music catalog;
 - verify title, artist, version, release context, and availability.
 
-A catalog connection is **not the same thing as private listening-history access**. The Skill must never claim access to saved music, listening history, previous playlists, or persistent memory unless the host actually provides it.
+Catalog access is **not** the same thing as private listening-history access. The Skill must never claim access to saved music, listening history, previous playlists, or persistent memory unless the host actually provides it.
 
-Without catalog access, the Skill may produce **Candidate Curation — not catalog verified**, but it must not claim that the result is a confirmed or playable Apple Music playlist.
+Without catalog access, the result must be labeled **Candidate Curation — not catalog verified**.
 
 ## Daily scheduled curation
 
-ChatGPT Scheduled Tasks are a separate capability from Skills.
+Scheduled Tasks are a separate capability from Skills. Current product support may differ by account, workspace, and execution environment. Verify the first scheduled run rather than assuming an uploaded Personal Skill, prior task output, or music connector will always be available.
 
-Current OpenAI documentation says Scheduled Tasks are available globally to **Plus, Pro, Business, and Enterprise** users. Tasks can use supported connected apps when those apps are available to the account or workspace. However, OpenAI's Tasks documentation does **not currently explicitly guarantee that an uploaded Personal Skill is available inside every scheduled-task run**.
+Current OpenAI Tasks documentation:
 
-Therefore, treat the prompt below as a reusable setup template, then verify the first scheduled run in the target ChatGPT environment.
-
-Official Tasks documentation: <https://help.openai.com/en/articles/10291617-scheduled-tasks-in-chatgpt>
+<https://help.openai.com/en/articles/10291617-scheduled-tasks-in-chatgpt>
 
 ### Copyable setup prompt
 
@@ -93,54 +147,55 @@ Official Tasks documentation: <https://help.openai.com/en/articles/10291617-sche
 
 每次运行时：
 1. 为我生成当天约 15 首的 Apple Music 个性化歌单。
-2. 综合我的长期音乐偏好、近期反馈、当前可见的推荐历史、当天场景与审美疲劳；不要假设你能读取实际上不可访问的历史。
+2. 综合当前真正可见的长期偏好、近期反馈、推荐历史、当天场景与审美疲劳；不要假设你能读取实际上不可访问的历史。
 3. 不要只推荐热门歌曲，也不要简单堆叠“相似艺人”。
 4. 在熟悉感、邻近探索和少量可解释的意外发现之间保持平衡。
-5. 按 Entrance → Expansion → Discovery → Landing 的听觉弧线排序。
-6. 如果能够读取上一期结果，尽量避免连续重复歌曲；同一艺人通常不超过 2 首。如果无法读取上一期结果，不要声称已经完成去重。
-7. 最终曲目必须通过 Apple Music 或可用的等价音乐目录核实歌曲名、艺人和版本；如果没有目录能力，把结果明确标记为“Candidate Curation — not catalog verified”。
+5. 先形成一个内部策展命题，再按 Entrance → Expansion → Discovery → Landing 的听觉弧线组织；如果曲目数量不同，适配结构而不是机械套固定位置。
+6. 如果能够读取上一期结果，尽量避免连续重复歌曲；如果无法读取，不要声称已经完成跨日去重。
+7. 最终曲目必须通过 Apple Music 或可用的等价音乐目录核实；如果没有目录能力，明确标记为“Candidate Curation — not catalog verified”。
 8. 给歌单设计一个有画面感、非模板化的标题，并写一段完整的沉浸式叙事，而不是逐首歌曲介绍。
-9. 只有在当前环境实际提供历史、记忆或之前反馈时，才继续更新 Taste Profile；一次无解释跳过不能直接等同于“不喜欢”。
-10. 信息不足时不要让我填写长问卷；优先使用当前已有信息，只有确实无法形成可靠起点时才询问少量关键偏好。
+9. 只有在当前环境实际提供历史、记忆或之前反馈时，才更新 Taste Profile；一次无解释跳过不能直接等同于“不喜欢”。
+10. 这是定时任务时不要因为缺少偏好而阻塞询问；使用已有信息做保守但完整的最佳努力结果。
 
 每次完成后直接发送当天结果。
 请创建这个每日任务，并告诉我下一次运行时间。
 ```
 
-Change `8:30` to the listener's preferred delivery time.
+## Progressive disclosure
 
-## How the Skill thinks
+The main `SKILL.md` contains the activation logic and core workflow. Detailed guidance lives in focused references loaded only when needed:
 
-### Taste model
+- [`references/taste-model.md`](references/taste-model.md) — taste clusters, context scope, feedback confidence, fatigue;
+- [`references/playlist-design.md`](references/playlist-design.md) — thesis, candidate lanes, track roles, adaptive arcs, transitions, narrative;
+- [`references/catalog-grounding.md`](references/catalog-grounding.md) — catalog verification, versions, reflective retry, no-catalog fallback.
 
-The curator maintains 3–7 independent Taste Clusters plus:
+This follows the Agent Skills progressive-disclosure pattern and keeps the core instructions compact.
 
-- a **Negative Profile** for explicit dislikes and fatigue;
-- a **Short-term State** for current context and mood;
-- confidence-aware feedback signals.
+Agent Skills specification: <https://github.com/agentskills/agentskills/blob/main/docs/specification.mdx>
 
-See [`references/taste-model.md`](references/taste-model.md).
+## Evaluation
 
-### Playlist design
+Behavioral regression cases live in [`examples/evaluation-cases.md`](examples/evaluation-cases.md). They test:
 
-Candidate generation includes anchors, adjacent discovery, multi-interest recall, bridge tracks, long-tail recall, context, and controlled serendipity. The final set is then sequenced rather than simply ranked.
+- fatigue versus dislike;
+- contradictory Taste Clusters;
+- context-scoped preference;
+- adaptive short playlists;
+- scheduled stateless runs;
+- no-catalog fallback;
+- controlled surprise;
+- narrative quality.
 
-See [`references/playlist-design.md`](references/playlist-design.md).
-
-### Catalog grounding
-
-Every confirmed final track must be checked against the available music catalog. Version differences such as studio, live, remaster, cover, soundtrack, or language-specific releases are treated explicitly.
-
-See [`references/catalog-grounding.md`](references/catalog-grounding.md).
+The expected playlist can change; the behavioral contract should not.
 
 ## Default output
 
 1. **Playlist Title**
 2. **Narrative** — one coherent paragraph
 3. **Playlist** — verified tracks in listening order
-4. Optional markers: **Anchor · Discovery · Wildcard · Ending**
+4. Optional markers: **Anchor · Bridge · Discovery · Wildcard · Ending**
 
-The Skill should not produce 15 repetitive track-by-track blurbs unless requested.
+The Skill should not produce one mini-review per track unless requested.
 
 ## Repository structure
 
@@ -156,27 +211,20 @@ apple-music-personal-curator/
 │   ├── playlist-design.md
 │   └── catalog-grounding.md
 ├── examples/
+│   ├── prompts.md
+│   ├── sample-output.md
+│   └── evaluation-cases.md
 ├── docs/
+│   ├── design-notes.md
+│   └── dual-agent-review-v1.2.0.md
 └── .github/
 ```
 
-The main `SKILL.md` contains the activation logic and core workflow. Detailed reasoning rules live in `references/` and are loaded only when needed, following the Agent Skills progressive-disclosure pattern.
-
-## Design principles
-
-- **Taste is multi-cluster.** Contradictory preferences are normal.
-- **Dislike is not fatigue.** “I dislike it” and “I like it but not today” are different signals.
-- **Discovery needs a bridge.** Surprise should remain explainable.
-- **A playlist is not Top 15.** Set quality and sequence matter.
-- **Catalog grounding is mandatory for confirmed output.**
-- **Memory must be real.** Never invent access to listening history or previous runs.
-- **Narrative is an entry point, not an encyclopedia.**
-
 ## Releases and validation
 
-- Changes to `SKILL.md` are validated automatically.
-- The version is stored in `metadata.version`.
-- A new semantic version in `SKILL.md` triggers an immutable GitHub Release and a portable ZIP package.
+- `SKILL.md` changes are validated automatically.
+- The semantic version is stored in `metadata.version`.
+- A new version in `SKILL.md` triggers a GitHub Release and portable ZIP.
 - Documentation-only changes do not trigger a new release.
 
 ## Contributing

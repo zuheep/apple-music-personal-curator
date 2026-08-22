@@ -17,7 +17,29 @@ Maintain 3–7 independent Taste Clusters rather than one genre label. A cluster
 
 Clusters may contradict each other. Do not force every preference into one musical identity.
 
-## 2. Negative Profile
+## 2. Context-conditioned taste
+
+Some preferences are global; others are specific to a situation. Track scope when evidence supports it.
+
+Useful contextual dimensions include:
+
+- foreground listening versus background / focus use;
+- tolerance for lyrical density;
+- desired energy and dynamic volatility;
+- vocal prominence;
+- language preference for the current context;
+- acoustic versus electronic texture;
+- production density and polish;
+- era familiarity;
+- appetite for novelty.
+
+Examples:
+
+- “Too distracting for work” is not a global dislike.
+- “I want more vocals at night” should not overwrite daytime focus preferences.
+- “I am tired of this artist” is a temporary fatigue signal unless the user says otherwise.
+
+## 3. Negative Profile
 
 Keep these distinct:
 
@@ -29,9 +51,9 @@ Keep these distinct:
 
 Fatigue is not dislike.
 
-## 3. Short-term State
+## 4. Short-term State
 
-Consider:
+Consider only information actually available:
 
 - recently mentioned or selected tracks;
 - recent positive and negative feedback;
@@ -41,37 +63,47 @@ Consider:
 
 Short-term state may adjust the mix but must not overwrite long-term taste.
 
-## 4. Feedback Confidence
+## 5. Evidence scope and confidence
+
+Treat each signal as having both **strength** and **scope**.
+
+Possible scopes:
+
+- global / long-term;
+- context-specific;
+- temporary fatigue;
+- playlist-specific;
+- ambiguous / unscoped.
 
 ### Strong positive
 
 - explicit “love / favorite”;
-- saving a playlist;
+- saving a playlist when that action is actually observable;
 - asking for more like this;
 - repeated voluntary mentions of the same track or artist.
 
 ### Moderate positive
 
-- “good /不错”;
-- listening through;
-- asking about the track or artist.
+- explicit “good / 不错”;
+- asking about the track or artist;
+- completion or replay only when actual telemetry is provided by the host.
 
 ### Strong negative
 
 - explicit dislike;
-- Suggest Less;
+- Suggest Less when actually observable;
 - explicit request to avoid a sound;
-- rapid skip with an explanation.
+- rapid skip with an explanation when the skip is actually observable.
 
 ### Weak negative
 
-- “average /一般”;
+- “average / 一般”;
 - “not today”;
-- skip with no stated reason.
+- unexplained skip when telemetry is actually available.
 
-Never convert one unexplained skip into a permanent dislike.
+Never invent behavioral telemetry. Never convert one unexplained skip into a permanent dislike.
 
-## 5. Exploration Budget
+## 6. Exploration Budget
 
 Use these as starting points, not rigid quotas.
 
@@ -80,15 +112,19 @@ Use these as starting points, not rigid quotas.
 | Lower | ~60% | ~30% | ~10% |
 | Higher | ~40% | ~40% | ~20% |
 
-Controlled surprise must have at least one explainable connection to known taste. Do not use obscurity as a substitute for discovery.
+Adjust by context. A user may want high novelty for active discovery but low novelty for focused work.
 
-## 6. Fatigue and repetition
+Controlled surprise must have at least one explainable connection to known taste, current context, or the curatorial thesis. Do not use obscurity as a substitute for discovery.
+
+## 7. Fatigue and repetition
 
 Unless there is a clear reason:
 
-- avoid repeating tracks on consecutive daily playlists;
+- avoid repeating tracks on consecutive daily playlists when prior output is available;
 - usually cap an artist at two tracks per playlist;
 - avoid persistent over-representation of one artist or Taste Cluster;
 - treat favorite tracks as occasional anchors, not daily defaults.
+
+If prior output is unavailable, do not pretend that repetition control has been performed.
 
 The goal is familiarity without repetition fatigue.

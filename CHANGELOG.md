@@ -1,30 +1,46 @@
 # Changelog
 
-All notable changes to this project are documented here.
+All notable changes to this project will be documented here.
+
+## 1.2.0 — 2026-08-22
+
+Dual-agent curation and product reliability review.
+
+### Music curation improvements
+
+- Added an internal **Curatorial Brief** and one-sentence curatorial thesis.
+- Added soft track roles: Anchor, Bridge, Pivot, Discovery, Wildcard, Landing.
+- Made the four-act structure adaptive to playlist length rather than fixed to 15 tracks.
+- Added intentional transition types: Blend, Lift, Contrast, Reset.
+- Added context-specific sequencing guidance for focus, commute, workout, late-night, and active-discovery sessions.
+- Strengthened the rule that discovery must be explainable rather than merely obscure.
+
+### Product and reliability improvements
+
+- Added explicit operating modes for verified-with-history, verified-stateless, and no-catalog environments.
+- Added non-blocking behavior for scheduled / unattended cold starts.
+- Added context-scoped feedback so situational preferences do not overwrite global taste.
+- Clarified that behavioral telemetry may only be used when the host actually exposes it.
+- Added behavioral regression cases in `examples/evaluation-cases.md`.
+- Reduced volatile product-plan claims in the README and linked current official documentation instead.
+
+### Collaboration record
+
+- Added `docs/dual-agent-review-v1.2.0.md` documenting the music-curator / product-manager review and trade-offs.
 
 ## 1.1.1 — 2026-08-22
 
-Public-release hardening and lower-noise automation.
+Reliability and release cleanup.
 
-### Changed
-
-- Rewrote `SKILL.md` around a shorter activation workflow with progressive disclosure.
-- Moved detailed taste-model, playlist-design, and catalog-grounding guidance into `references/`.
-- Moved the semantic version into `metadata.version` for Agent Skills compatibility.
-- Strengthened capability boundaries around catalog access, listening history, persistent memory, and previous scheduled-task runs.
-- Rewrote the Scheduled Tasks prompt so it degrades safely when the Skill, prior-run history, or catalog tools are unavailable.
-- Clarified current ChatGPT Skills and Scheduled Tasks availability in the README.
-- Added automated Skill validation.
-- Replaced the hard-coded v1.0.0 release workflow with a version-driven release workflow.
-- Reduced GitHub Actions noise: documentation-only changes no longer trigger validation or release workflows.
+- Clarified Personal Skill versus Scheduled Task capability boundaries.
+- Limited release automation to `SKILL.md` version changes.
+- Reduced unnecessary GitHub Actions notification noise for documentation-only edits.
 
 ## 1.1.0 — 2026-08-22
 
-### Changed
-
-- Introduced a more concise core workflow and reference-based architecture.
-- Added explicit daily / recurring curation behavior.
-- Added stronger no-catalog and memory-boundary handling.
+- Refactored the original long-form Skill into a concise core workflow plus `references/`.
+- Moved semantic version metadata under `metadata.version`.
+- Added Agent Skills validation and version-driven release automation.
 
 ## 1.0.0 — 2026-08-22
 
