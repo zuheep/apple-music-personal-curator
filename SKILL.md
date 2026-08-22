@@ -1,471 +1,249 @@
 ---
 name: apple-music-personal-curator
-description: Generate personalized Apple Music playlists using long-term taste, short-term context, controlled exploration, fatigue control, sequencing, catalog verification, and immersive playlist narratives. Use this skill for daily music recommendations, playlist curation, taste-profile learning, Apple Music song discovery, or narrative playlist design.
-version: 1.0.0
+description: >
+  Curate personalized Apple Music playlists as complete listening experiences using multi-cluster taste modeling, current context, controlled discovery, fatigue control, sequencing, catalog verification, and immersive narrative. Use for daily music recommendations, scene- or mood-based playlists, Apple Music discovery, follow-up curation from listener feedback, or requests to improve playlist flow and storytelling. Do not use the full workflow for simple factual questions about one song or artist.
 license: MIT
-compatibility: Any AI assistant that can reason over user feedback and access Apple Music catalog search or equivalent music metadata tools. Optimized for ChatGPT with Apple Music catalog tools.
+compatibility: >
+  Best with Apple Music catalog search or an equivalent music catalog. Can run without catalog access only in an explicitly unverified candidate-curation mode. Persistent taste learning requires host-supported memory or user-provided history.
 metadata:
-  author: Zuh
-  tags: music apple-music recommendation playlist curation personalization narrative
-  agentskills_spec: "1.0"
+  author: "Zuh"
+  version: "1.1.0"
+  tags: "music apple-music recommendation playlist curation personalization narrative discovery"
+  standard: "Agent Skills"
 ---
 
 # Apple Music Personal Curator
 
-## Purpose
+## Mission
 
-为每个用户生成真正个性化、可持续学习、有探索感并具有完整听觉叙事的 Apple Music 歌单。
+Curate a playlist that feels intentionally made for this listener **today**, not a ranked list of songs they are statistically likely to click.
 
-目标不是预测“用户最可能点击哪一首歌”，而是策划一段值得完整听完的音乐体验。
+Optimize the whole listening session across:
 
-默认每日歌单为 15 首。
+- personal relevance;
+- current context;
+- discovery;
+- controlled surprise;
+- diversity;
+- coherence;
+- fatigue control;
+- narrative.
 
-## When to Use
+Default to **15 tracks** unless the user requests another length.
 
-在以下请求中优先使用本 Skill：
+## Activation boundaries
 
-- 今日 / 每日音乐推荐
-- 为某个场景、时段或情绪策展
-- 根据用户长期偏好生成 Apple Music 歌单
-- 在熟悉感与发现感之间做平衡推荐
-- 根据用户对过去歌单的反馈继续学习
-- 为歌单设计标题、顺序和沉浸式叙事
+Use this Skill when the user wants:
 
-如果用户只是询问某首歌、某位艺人的事实信息，不必强制运行完整策展流程。
+- a daily or recurring music recommendation;
+- a playlist for a scene, activity, time, or mood;
+- personalized Apple Music discovery;
+- a new playlist based on feedback from earlier recommendations;
+- better playlist sequencing, transitions, or narrative;
+- a balance of familiarity and new music rather than a popularity list.
 
-## Required Capabilities
+Do **not** run the full workflow for a simple factual lookup about a song, album, or artist unless the user also asks for curation.
 
-最佳体验需要：
+## Core rules
 
-1. 可搜索 Apple Music 曲库或等价音乐目录；
-2. 能验证曲名、艺人、版本和可用性；
-3. 能读取当前会话中的用户反馈；
-4. 若平台允许持久化偏好，可维护 Taste Profile；若不允许，则只使用当前可见上下文，不得声称已长期记住。
+1. **Taste is multi-cluster.** Never reduce the listener to one genre or one artist ecosystem.
+2. **Fatigue is not dislike.** “I like this but not lately” is different from “I dislike this.”
+3. **One skip is weak evidence.** Do not permanently change the taste model from one unexplained skip.
+4. **Discovery needs a bridge.** Surprise must have at least one explainable connection to known taste or current context.
+5. **A playlist is not Top N.** Select a strong set, then sequence it.
+6. **Catalog grounding is mandatory for final delivery.** Never present an unverified track as a confirmed Apple Music result.
+7. **Narrative must serve listening.** Do not produce 15 repetitive mini-reviews by default.
+8. **Never invent memory or platform access.** Use only history and personal data actually available in the current environment.
 
-若没有 Apple Music 曲库访问能力：
+## Workflow
 
-- 可以生成“候选策展方案”；
-- 必须明确说明曲目尚未完成目录验证；
-- 不得把未验证结果表述为已创建或已确认可播放的 Apple Music 歌单。
+### Step 1 — Establish listener state
 
-## Core Philosophy
+Use available evidence to separate:
 
-推荐音乐时同时优化：
+- **Long-term Taste** — stable preferences across 3–7 Taste Clusters;
+- **Negative Profile** — explicit dislikes and fatigue signals;
+- **Short-term State** — current scene, mood, recent feedback, and desire for familiarity versus discovery.
 
-1. Personal Relevance — 与用户真实音乐偏好的匹配度
-2. Context — 当下场景与短期兴趣
-3. Discovery — 新鲜感与邻近探索
-4. Serendipity — 控制范围内的意外发现
-5. Diversity — 艺人、年代、语言、风格和声音多样性
-6. Coherence — 整张歌单及相邻歌曲的连贯性
-7. Fatigue Control — 避免重复与兴趣坍缩
-8. Narrative — 让整张歌单形成一个可以被感受到的故事
+If the task requires building or updating the profile, or feedback is ambiguous, read [references/taste-model.md](references/taste-model.md).
 
-不得单纯按照歌曲知名度、艺人相似度或热门程度生成歌单。
+Do not ask a long questionnaire. Prefer existing context and natural feedback.
 
-## User Taste Model
+### Step 2 — Cold start only when needed
 
-维护动态 Taste Profile，而不是单一音乐标签。
+If there is not enough evidence to curate responsibly, request only:
 
-### Long-term Taste
+- 3–5 strongly liked tracks or artists;
+- 2–3 clear dislikes or sounds to avoid;
+- one common listening context.
 
-识别 3–7 个相互独立的 Taste Clusters。
+Then start curating and learn through use.
 
-每个 Cluster 可包含：
+### Step 3 — Build a diverse candidate pool
 
-- representative artists
-- representative tracks
-- genres
-- language
-- era
-- instrumentation
-- vocal characteristics
-- production style
-- energy
-- emotional tone
-- lyrical preference
-- familiarity preference
-- exploration tolerance
+Generate substantially more candidates than the final playlist using multiple paths:
 
-允许兴趣之间相互矛盾。不要强迫所有音乐偏好归入同一种人格。
+- anchors;
+- adjacent discovery;
+- different Taste Clusters;
+- bridge tracks;
+- long-tail matches;
+- current context;
+- controlled serendipity.
 
-### Negative Profile
+For detailed candidate-generation and ranking guidance, read [references/playlist-design.md](references/playlist-design.md).
 
-单独记录：
+Do not respond to uncertainty by filling the playlist with famous hits.
 
-- 明确不喜欢的歌曲
-- 明确不喜欢的艺人
-- 不喜欢的声音特征
-- 不喜欢的情绪表达
-- 已经听腻的歌曲 / 艺人
-- “喜欢但最近不想听”
+### Step 4 — Select the set
 
-“听腻”和“不喜欢”不得合并。
+Evaluate candidates on:
 
-### Short-term State
+- Personal Fit;
+- Short-term Fit;
+- Context Fit;
+- Discovery Value;
+- Serendipity;
+- Diversity Contribution;
+- Transition Compatibility;
+- Narrative Value;
+- Catalog Confidence.
 
-每次推荐考虑：
+Penalize recent repetition, artist saturation, cluster / genre saturation, overfamiliarity, fatigue, and uncertain entities.
 
-- 最近主动提到或选择的歌曲
-- 最近喜欢 / 删除的推荐
-- 当前场景
-- 当前情绪
-- 当前希望获得熟悉感还是发现感
-- 最近几张歌单产生的审美疲劳
+Unless there is a clear reason:
 
-短期兴趣不得完全覆盖长期兴趣。
+- avoid repeating tracks from the immediately previous daily playlist;
+- usually keep an artist to no more than two tracks;
+- avoid letting one Taste Cluster dominate;
+- use favorite tracks as occasional anchors, not automatic daily defaults.
 
-## Feedback Signals
+### Step 5 — Sequence the listening arc
 
-反馈按置信度处理。
+For a 15-track playlist, default to:
 
-### Strong Positive
+1. **Entrance — tracks 1–3:** establish trust and entry.
+2. **Expansion — tracks 4–7:** move naturally beyond the obvious.
+3. **Discovery — tracks 8–11:** place the strongest new finds and at least one Bridge or Serendipity track.
+4. **Landing — tracks 12–15:** create release, resolution, or afterglow.
 
-- 明确说“非常喜欢”
-- Favorite / 收藏
-- 主动保存歌单
-- 主动要求“再来类似的”
-- 多次主动提到同一首歌或艺人
+Track 1 is the best entrance, not necessarily the highest-scoring song. The last track must feel like an ending.
 
-### Moderate Positive
+Check adjacent transitions for energy, perceived tempo, instrumentation, vocal texture, language, production density, emotional direction, era, and intro / outro character.
 
-- 表示“不错”
-- 完整听完
-- 主动询问歌曲 / 艺人信息
+Read [references/playlist-design.md](references/playlist-design.md) when sequencing or narrative design is a central part of the request.
 
-### Strong Negative
+### Step 6 — Verify every final track
 
-- 明确不喜欢
-- Suggest Less
-- 明确要求以后不要推荐某种声音
-- 很快跳过并明确表示原因
+Before presenting the final playlist, verify each selected track through Apple Music catalog search or an equivalent music catalog.
 
-### Weak Negative
+Confirm, as relevant:
 
-- “一般”
-- “今天不想听”
-- 跳过但没有明确原因
+- title;
+- artist;
+- intended version;
+- album / release context;
+- catalog availability.
 
-不得因为一次跳过永久判定用户不喜欢某歌曲类型。
+Distinguish studio, live, remaster, acoustic, cover, soundtrack, language-specific, deluxe, and anniversary versions when they matter.
 
-## Cold Start
+If a lookup fails, diagnose and retry before replacing the track. Read [references/catalog-grounding.md](references/catalog-grounding.md) for the verification and fallback procedure.
 
-如果用户画像不足，不做大量问卷。
+### Step 7 — Write the title and narrative
 
-优先从已有上下文、已保存歌单和明确反馈中建立初始画像。
+Create a distinctive title tied to this playlist's specific scene, image, musical relationship, or emotional movement.
 
-信息仍不足时，只收集最少信息：
+Avoid generic titles such as “Today’s Picks”, “Healing Playlist”, “Good English Songs”, or “Weekend Music”.
 
-- 3–5 首非常喜欢的歌曲
-- 2–3 首明确不喜欢的歌曲
-- 最近最常见的听歌场景
+Write **one coherent narrative paragraph** that:
 
-之后通过推荐反馈逐步学习。
+- establishes a scene;
+- naturally includes 3–6 important tracks or artists;
+- uses verified musical facts only;
+- suggests the playlist's turn and landing;
+- leaves room for the listener's own interpretation.
 
-## Candidate Generation
+Do not fabricate artist relationships, creation stories, release facts, or song meanings.
 
-生成最终歌单前，先形成远大于最终数量的候选池。
+### Step 8 — Deliver concisely
 
-候选池至少来自以下不同路径。
+Use this default structure:
 
-### Anchor Recall
+```markdown
+# [Playlist Title]
 
-用户明确喜欢的歌曲、艺人及高度相关作品。
+[One immersive narrative paragraph.]
 
-### Adjacent Discovery
+## Playlist
+1. Track — Artist
+2. Track — Artist
+...
+15. Track — Artist
 
-与已有兴趣在一到两个维度相邻，但并非完全同质的歌曲。
+Optional markers: Anchor · Discovery · Wildcard · Ending
+```
 
-例如，喜欢 Coldplay 不等于继续推荐大量 Coldplay。可以沿以下方向向外扩展：
+When the host provides playable Apple Music components or equivalent catalog UI, prefer those over plain text while preserving the sequence.
 
-- era
-- songwriting
-- melodic structure
-- instrumentation
-- emotional tone
-- scene
-- producer
-- related artist ecosystem
+Do not add 15 track-by-track recommendation blurbs unless the user asks for them.
 
-### Multi-interest Recall
+### Step 9 — Learn from natural feedback
 
-分别从不同 Taste Cluster 召回候选，避免单一兴趣占满歌单。
+Accept feedback such as:
 
-### Bridge Recall
+- “第 3 首很好”;
+- “7、8 不喜欢”;
+- “后半段比前半段好”;
+- “这个歌手以后多一点”;
+- “这种男声我不喜欢”;
+- “今天不是这个心情”.
 
-寻找能够连接两个 Taste Cluster 的歌曲。Bridge Track 是高价值候选。
+Decompose feedback into track, artist, sound, Taste Cluster, context, sequence, narrative, and fatigue signals as appropriate.
 
-### Long-tail Recall
+Update persistent taste only when the host actually supports memory or the user explicitly supplies reusable profile data. Otherwise, use feedback only within available context.
 
-主动寻找知名度较低但匹配度高的作品。不得因为不确定就退回全部热门歌曲。
+## Daily / recurring curation
 
-### Context Recall
+For a daily run:
 
-根据今天的场景和短期状态加入候选。
+1. prefer available recent playlist history to reduce repetition;
+2. use the current time / scene only when the environment provides it or the user specified it;
+3. preserve long-term Taste Clusters while allowing short-term state to adjust today's mix;
+4. vary the route through the listener's taste over multiple days instead of repeatedly using the same anchor artists;
+5. do not claim knowledge of yesterday's playlist if the scheduled run cannot access it.
 
-### Serendipity Recall
+## No-catalog mode
 
-加入少量“不明显但解释得通”的歌曲。惊喜必须与用户已有偏好存在至少一个可解释连接点。
+If no suitable catalog tool is available, you may still produce a draft, but label it clearly:
 
-## Exploration Budget
+**Candidate Curation — not catalog verified**
 
-探索比例根据 Taste Confidence 动态调整。
+In this mode, do not claim that an Apple Music playlist was created, confirmed, or is playable. See [references/catalog-grounding.md](references/catalog-grounding.md).
 
-低置信度用户：
+## Privacy boundaries
 
-- 约 60% reliable / familiar
-- 约 30% adjacent discovery
-- 约 10% controlled surprise
+Do not infer sensitive personal traits from music taste. Do not use unrelated identity information to personalize music.
 
-高置信度用户：
+Do not claim access to:
 
-- 约 40% reliable
-- 约 40% adjacent discovery
-- 约 20% controlled surprise
+- private listening history;
+- saved music;
+- Apple Music account data;
+- persistent memory;
+- previous scheduled-task output;
 
-不得为了“发现新歌”刻意塞入大量不相关冷门音乐。
+unless the current platform actually provides that information.
 
-## Ranking
+## Final quality check
 
-对候选歌曲综合评估：
+Before delivery, confirm:
 
-- Personal Fit
-- Short-term Fit
-- Context Fit
-- Discovery Value
-- Serendipity
-- Diversity Contribution
-- Transition Compatibility
-- Narrative Value
-- Catalog Confidence
-
-同时应用 Penalty：
-
-- Recent Repetition Penalty
-- Artist Saturation Penalty
-- Genre Saturation Penalty
-- Overfamiliarity Penalty
-- Fatigue Penalty
-- Unverified Entity Penalty
-
-推荐排序不是简单取 Top 15。先选择一个优秀的集合，再进行 Playlist Sequencing。
-
-## Daily Repetition Rules
-
-除非有明确理由：
-
-- 连续两天尽量不重复歌曲
-- 同一艺人每日通常不超过 2 首
-- 同一艺人不得长期高频出现
-- 不允许一个 Taste Cluster 长期占据整张歌单
-- 用户特别喜欢的歌曲可以成为 Anchor，但不能每天出现
-
-维护“熟悉感”，不制造“重复感”。
-
-## Playlist Sequencing
-
-默认 15 首歌曲按照四幕组织。
-
-### Act I — Entrance
-
-Track 1–3：建立信任和进入感。至少有一个较高置信度的 Anchor。
-
-第一首不是全歌单评分最高的歌曲，而是最合适的“入口”。
-
-### Act II — Expansion
-
-Track 4–7：逐渐离开最熟悉的区域，通过艺人、声音、年代、情绪或制作关系完成自然扩张。
-
-### Act III — Discovery
-
-Track 8–11：承载当天最重要的新发现。允许更深、更陌生或更有个性的歌曲出现。至少包含一个 Bridge Track 或 Serendipity Track。
-
-### Act IV — Landing
-
-Track 12–15：形成变化、释放或余韵。最后一首必须像一个真正的结尾，不得因为歌曲评分高就随意放在最后。
-
-## Transition Rules
-
-检查每一组相邻歌曲，考虑：
-
-- energy
-- tempo perception
-- instrumentation
-- vocal texture
-- language
-- production density
-- emotional direction
-- era
-- intro / outro feeling
-
-避免连续出现大量几乎相同的歌曲，也避免毫无铺垫的巨大跳跃。
-
-允许 Contrast Transition，但必须服务于整体结构。
-
-## Catalog Grounding
-
-LLM 不得凭记忆直接向用户交付最终歌单。
-
-流程必须是：
-
-1. 先根据 Taste Model 选择候选；
-2. 确定最终曲目；
-3. 使用 Apple Music 曲库工具验证；
-4. 核对 song title、artist、version、album / release（如相关）和 Apple Music availability；
-5. 找不到目标版本时搜索准确版本；
-6. 仍无法确认时替换曲目。
-
-不得把 hallucinated track 放入最终歌单。
-
-优先选择原版或最符合策展意图的版本。
-
-Live、Remaster、Cover、English Version、Movie Version 等不同版本必须主动区分。
-
-## Reflective Retry
-
-当曲目无法找到、版本错误或歌单明显失衡时，不直接退回热门歌曲。
-
-先判断失败原因：
-
-- spelling mismatch
-- translated title
-- regional availability
-- wrong version
-- excessive constraint
-- long-tail availability
-- artist ambiguity
-
-然后修改候选或放宽最次要约束，再尝试验证。
-
-## Narrative Engine
-
-每张歌单必须拥有一个真正的标题和一段完整叙事。
-
-### Title
-
-避免：
-
-- 今日精选
-- 治愈歌单
-- 好听英文歌
-- 周末音乐
-
-标题应该具有记忆点，并与这张歌单独有的结构相关。
-
-可以来自：
-
-- 场景
-- 时间
-- 一个意象
-- 音乐史联系
-- 歌词之外的共同主题
-- 整张歌单的情绪运动
-
-### Narrative
-
-默认写成一个完整段落，不逐首列介绍，也不写成百科资料堆砌。
-
-好的 Narrative 应该：
-
-- 建立一个进入音乐的场景
-- 自然写入 3–6 个关键歌曲或艺人
-- 必要时加入专辑、时代、创作背景或音乐关系
-- 描述声音之间为什么会相遇
-- 暗示歌单的转折和落点
-- 给用户留出自己感受音乐的空间
-
-事实性歌曲 / 歌手信息必须验证。
-
-不要虚构创作故事、歌手关系或歌曲含义。
-
-Narrative 的任务不是解释音乐，而是让用户在按下播放之前，已经进入这张歌单。
-
-## Output
-
-默认输出顺序：
-
-### Playlist Title
-
-一个有记忆点、与当天策展结构相关的标题。
-
-### Narrative
-
-一个完整段落。
-
-### Apple Music Playlist
-
-使用 Apple Music 可播放曲目组件或当前平台等价的可验证音乐目录结果展示最终歌曲。
-
-必要时仅额外指出 2–4 个：
-
-- 今日 Anchor
-- 今日 Discovery
-- 今日 Wildcard
-- 今日 Ending
-
-不要写 15 条逐曲推荐理由，除非用户明确要求。
-
-## Learning Loop
-
-生成歌单后，不强制要求复杂评分。
-
-允许用户使用自然语言反馈，例如：
-
-- “第 3 首很好”
-- “7、8 不喜欢”
-- “后半段比前半段好”
-- “这个歌手以后多一点”
-- “这种男声我不喜欢”
-- “今天不是这个心情”
-- “这张整体很好”
-
-将反馈拆解为：
-
-- Track Signal
-- Artist Signal
-- Sound Signal
-- Taste Cluster Signal
-- Context Signal
-- Sequence Signal
-- Narrative Signal
-
-更新当前可用的 Taste Profile。不要只记录“喜欢 / 不喜欢”。
-
-## Privacy and Memory Boundaries
-
-- 不要求用户提供真实姓名、联系方式或其他与音乐策展无关的个人信息。
-- 不把音乐偏好推断为敏感身份、心理诊断、政治立场或其他敏感属性。
-- 不声称拥有平台未提供的播放历史、收藏历史或长期记忆。
-- 只有在工具或用户明确提供数据时，才能使用相应历史信息。
-- 对外部曲库、第三方工具和连接器的权限遵循宿主平台本身的权限模型。
-
-## Final Quality Check
-
-交付前检查：
-
-1. 是否真的基于用户偏好，而不是泛化热门榜？
-2. 是否同时包含熟悉感、邻近探索和少量惊喜？
-3. 是否避免同艺人 / 同风格过度饱和？
-4. 四幕结构是否成立，第一首和最后一首是否承担明确角色？
-5. 相邻歌曲是否有可感知的连接或有意设计的对比？
-6. 所有最终曲目是否完成目录验证？
-7. 版本是否准确区分？
-8. Narrative 中的事实是否经过验证？
-9. Narrative 是否让人进入歌单，而不是逐首解释？
-10. 是否避免声称拥有不存在的记忆、数据或权限？
-
-任何关键项不满足时，先修正，再交付。
-
-## Daily Curator Principle
-
-每天的目标不是：
-
-> 找到 15 首用户大概率喜欢的歌曲。
-
-每天真正的目标是：
-
-> 让用户在一小时后感觉，今天认识了一点新的音乐，也更清楚了一点自己为什么喜欢音乐。
-
-Apple Music 是播放器。
-
-这个 Skill 是策展人。
+- the result reflects more than popularity or artist similarity;
+- familiar, adjacent, and surprising choices are balanced for the available taste confidence;
+- artist and Taste Cluster saturation are controlled;
+- the playlist has a clear Entrance → Expansion → Discovery → Landing arc;
+- adjacent transitions are intentional;
+- every final track and important version is catalog verified, or the entire result is explicitly marked unverified;
+- narrative facts are verified;
+- no listening history, memory, or tool capability was invented;
+- the final answer is concise enough to feel like a playlist, not a report.
