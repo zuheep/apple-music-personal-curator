@@ -15,7 +15,7 @@ compatibility: >
   is unavailable.
 metadata:
   author: "Zuh"
-  version: "1.3.0"
+  version: "1.4.0"
   tags: "music apple-music recommendation playlist curation personalization behavioral-signals reranking"
   standard: "Agent Skills"
 ---
