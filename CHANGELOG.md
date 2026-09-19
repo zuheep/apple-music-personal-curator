@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented here.
 
+## 1.5.0 — 2026-09-19
+
+Frictionless explicit-feedback UX for daily playlist learning.
+
+### Feedback interaction
+
+- Added one-line optional feedback syntax such as `3👍 7👍 5👎`.
+- Added flexible shorthand parsing: `+3`, `-5`, `喜欢3`, `5不喜欢`, and natural-language equivalents.
+- Made unmentioned tracks remain unknown rather than silently neutral or positive.
+- Added whole-playlist quick tags such as `无记忆点`, `太软`, `太熟`, `前好后弱`, `后半更好`, and `曲序怪`.
+- Whole-playlist feedback now explicitly changes curation and sequencing without being copied onto every track.
+- Prohibited feedback follow-up questionnaires by default: one track or one playlist tag is sufficient.
+
+### Regression coverage
+
+- Added cases for minimal track feedback, playlist-only feedback, sequence-only feedback, and single-signal completion.
+
 ## 1.4.0 — 2026-09-19
 
 Production-oriented MusicKit bridge MVP for real listening behavior and verified playlist write-back.
