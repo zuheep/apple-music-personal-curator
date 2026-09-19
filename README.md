@@ -1,8 +1,8 @@
 # Apple Music Personal Curator
 
-A portable Agent Skill that turns music recommendation into **curation**: multi-cluster taste modeling, context-aware discovery, fatigue control, adaptive sequencing, catalog verification, and one immersive narrative.
+A portable Agent Skill that turns music recommendation into **curation**: multi-cluster taste modeling, user-authorized listening signals when available, two-stage candidate generation and reranking, novelty control, adaptive sequencing, catalog verification, delivery gates, and one immersive narrative.
 
-**Current version:** 1.2.0  
+**Current version:** 1.3.0  
 **License:** MIT  
 **Author:** Zuh
 
@@ -18,16 +18,7 @@ Apple Music Personal Curator treats recommendation as three linked problems:
 
 The goal is not “15 songs you will probably like.” The goal is a session that feels familiar enough to trust, adventurous enough to discover something, and coherent enough to finish.
 
-## What changed in v1.2
-
-This release combines two review perspectives:
-
-- **music curation:** stronger curatorial thesis, track roles, context-sensitive taste, adaptive arcs, and intentional transition types;
-- **product design:** capability-aware operating modes, non-blocking scheduled behavior, honest degradation when history or catalog access is missing, and regression evaluation cases.
-
-The result is less rigid while being more reliable.
-
-## Core design
+## What changed in v1.3\n\nv1.3 upgrades the project from a curation prompt into a clearer recommendation-system contract.\n\n### Real listening signals\n\nThe Skill can consume **user-authorized behavioral signals** when the host exposes them: recently played tracks/resources, personal ratings, favorites, library membership, Apple personalized recommendations, and Apple Music Replay summary data.\n\nThe key rule is: **exposure is not preference**. A recent play may indicate interest, habit, autoplay, testing, background use, or fatigue. Explicit user feedback remains higher priority.\n\nSee [references/listening-signals.md](references/listening-signals.md).\n\n### Two-stage curation\n\nFor a default one-hour playlist, the curator first builds roughly **30–45 candidates**, then reranks them into **14–16 final tracks** before sequencing.\n\n### Cooldown and structural novelty\n\nWhen trustworthy history exists, the default recommendation controls are **30 days for the same track** and a **7-day soft penalty for the same artist**. Recent playlists are also compared by a rough structure fingerprint: language mix, era distribution, style center, energy curve, opener/closer type, artist overlap, and density/texture pattern.\n\n### Melodic peaks\n\nA smooth playlist can still be forgettable. The default daily playlist should normally contain roughly **2–3 plausible melodic peaks** without turning into constant maximalist choruses.\n\n### Stronger Apple Music verification\n\nRecording verification now considers title, artist, album context, release date, duration, and **ISRC** when useful. Unexpected Live / Acoustic / Remix / Edit / Demo / Session results trigger reflective retry. If the final interactive component cannot reliably lock to the intended recording, replace the track rather than knowingly shipping a mismatch.\n\n### Delivery Gate\n\nThe Skill now distinguishes catalog verification, interactive Apple Music card generation, and user-library playlist write-back. A sentence saying “Open Playlist in Apple Music” is not proof that a card or playlist exists.\n\n## Core design
 
 ### 1. Capability-aware operation
 
@@ -71,7 +62,7 @@ The curator keeps 3–7 independent Taste Clusters and separates:
 
 Tracks may serve soft roles such as:
 
-**Anchor · Bridge · Pivot · Discovery · Wildcard · Landing**
+**Anchor · Bridge · Pivot · Discovery · Wildcard · Peak · Landing**
 
 Roles help create movement without forcing a rigid quota.
 
@@ -85,7 +76,7 @@ But shorter and longer playlists preserve the arc instead of mechanically using 
 
 Transitions are designed as **Blend, Lift, Contrast, or Reset** rather than treated as accidental adjacency.
 
-## Quick start
+## Real listening behavior + ChatGPT curation\n\nThe recommended architecture stays small:\n\nApple Music / MusicKit → Behavior Adapter → normalized BehaviorSnapshot → Taste State → Candidate Generation → Reranking + Sequencing → Recording Verification → Preview / Card → optional user-library playlist write-back.\n\nThe adapter should expose normalized music signals and keep tokens / credentials outside model context.\n\nApple currently documents MusicKit / Apple Music API support for personalized recommendations, recently played resources and tracks, ratings, favorites, library access, latest Apple Music Replay summary data, and creating/modifying user-library playlists with user authorization. Use Apple’s current developer documentation as the source of truth.\n\n- https://developer.apple.com/musickit/\n- https://developer.apple.com/documentation/applemusicapi/\n- https://developer.apple.com/documentation/applemusicapi/get-v1-me-recent-played-tracks\n- https://developer.apple.com/documentation/applemusicapi/create-a-new-library-playlist\n\nDo not assume skip count, completion rate, or listening duration unless a host explicitly supplies them.\n\nSee [docs/musickit-bridge.md](docs/musickit-bridge.md).\n## Quick start
 
 ```text
 给我今天的 Apple Music 歌单。今天下午工作，不想太吵，但不要纯背景音乐。熟悉感 60%，发现感 40%。
@@ -165,9 +156,7 @@ Current OpenAI Tasks documentation:
 
 The main `SKILL.md` contains the activation logic and core workflow. Detailed guidance lives in focused references loaded only when needed:
 
-- [`references/taste-model.md`](references/taste-model.md) — taste clusters, context scope, feedback confidence, fatigue;
-- [`references/playlist-design.md`](references/playlist-design.md) — thesis, candidate lanes, track roles, adaptive arcs, transitions, narrative;
-- [`references/catalog-grounding.md`](references/catalog-grounding.md) — catalog verification, versions, reflective retry, no-catalog fallback.
+- [`references/taste-model.md`](references/taste-model.md) — Taste Clusters, context, evidence confidence, fatigue, cooldown;\n- [`references/listening-signals.md`](references/listening-signals.md) — normalized behavior signals, evidence hierarchy, authorization boundaries;\n- [`references/playlist-design.md`](references/playlist-design.md) — candidate lanes, reranking, structure fingerprints, melodic peaks, sequencing;\n- [`references/catalog-grounding.md`](references/catalog-grounding.md) — recording identity, ISRC, reflective retry, Card Gate, write-back boundary.
 
 This follows the Agent Skills progressive-disclosure pattern and keeps the core instructions compact.
 
