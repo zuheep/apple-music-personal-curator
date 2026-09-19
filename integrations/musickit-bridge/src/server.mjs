@@ -1,4 +1,4 @@
-import http from "node:test";
+import http from "node:http";
 import { bridgeApiToken, bridgeConfigStatus } from "./token.mjs";
 import {
   createLibraryPlaylist,
