@@ -1,6 +1,6 @@
 # Apple Music Personal Curator
 
-A portable Agent Skill that turns music recommendation into **curation**: multi-cluster taste modeling, context-aware discovery, fatigue control, adaptive sequencing, catalog verification, and one immersive narrative.
+A portable Agent Skill that turns music recommendation into **curation**: multi-cluster taste modeling, user-authorized listening signals when available, two-stage candidate generation and reranking, novelty control, adaptive sequencing, catalog verification, delivery gates, and one immersive narrative.
 
 **Current version:** 1.3.0  
 **License:** MIT  
@@ -62,7 +62,7 @@ The curator keeps 3–7 independent Taste Clusters and separates:
 
 Tracks may serve soft roles such as:
 
-**Anchor · Bridge · Pivot · Discovery · Wildcard · Landing**
+**Anchor · Bridge · Pivot · Discovery · Wildcard · Peak · Landing**
 
 Roles help create movement without forcing a rigid quota.
 
@@ -156,9 +156,7 @@ Current OpenAI Tasks documentation:
 
 The main `SKILL.md` contains the activation logic and core workflow. Detailed guidance lives in focused references loaded only when needed:
 
-- [`references/taste-model.md`](references/taste-model.md) — taste clusters, context scope, feedback confidence, fatigue;
-- [`references/playlist-design.md`](references/playlist-design.md) — thesis, candidate lanes, track roles, adaptive arcs, transitions, narrative;
-- [`references/catalog-grounding.md`](references/catalog-grounding.md) — catalog verification, versions, reflective retry, no-catalog fallback.
+- [`references/taste-model.md`](references/taste-model.md) — Taste Clusters, context, evidence confidence, fatigue, cooldown;\n- [`references/listening-signals.md`](references/listening-signals.md) — normalized behavior signals, evidence hierarchy, authorization boundaries;\n- [`references/playlist-design.md`](references/playlist-design.md) — candidate lanes, reranking, structure fingerprints, melodic peaks, sequencing;\n- [`references/catalog-grounding.md`](references/catalog-grounding.md) — recording identity, ISRC, reflective retry, Card Gate, write-back boundary.
 
 This follows the Agent Skills progressive-disclosure pattern and keeps the core instructions compact.
 
