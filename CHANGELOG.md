@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented here.
 
+## 1.4.0 — 2026-09-19
+
+Production-oriented MusicKit bridge MVP for real listening behavior and verified playlist write-back.
+
+### MusicKit bridge
+
+- Added optional loopback-only Node bridge under `integrations/musickit-bridge/`.
+- Added user-authorized recently played tracks and Apple personalized recommendations as normalized `BehaviorSnapshot` inputs.
+- Preserved the rule that recent playback is exposure, not automatic preference.
+- Added private Apple Music library playlist creation from already verified catalog song IDs.
+- Added ES256 developer-token generation, external Music User Token handling, and bearer-protected local bridge access.
+- Added explicit capability flags so ratings, favorites, Replay, and other telemetry remain unavailable until actually implemented.
+- Added unit tests, syntax checks, and GitHub Actions CI for the bridge.
+
+### Scheduling integration
+
+- Daily curation can now consume a real `BehaviorSnapshot` when an authorized connector exposes it, and must degrade honestly when live behavior data is unavailable.
+
 ## 1.3.0 — 2026-09-19
 
 Behavior-aware two-stage curation and Apple Music delivery reliability.

@@ -2,7 +2,7 @@
 
 A portable Agent Skill that turns music recommendation into **curation**: multi-cluster taste modeling, user-authorized listening signals when available, two-stage candidate generation and reranking, novelty control, adaptive sequencing, catalog verification, delivery gates, and one immersive narrative.
 
-**Current version:** 1.3.0  
+**Current version:** 1.4.0  
 **License:** MIT  
 **Author:** Zuh
 
