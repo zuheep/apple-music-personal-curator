@@ -1,0 +1,43 @@
+name: Test MusicKit Bridge
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "integrations/musickit-bridge/**"
+      - ".github/workflows/bridge-test.yml"
+  pull_request:
+    paths:
+      - "integrations/musickit-bridge/**"
+      - ".github/workflows/bridge-test.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: integrations/musickit-bridge
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Run tests
+        run: npm test
+
+      - name: Syntax check
+        run: |
+          node --check src/token.mjs
+          node --check src/normalize.mjs
+          node --check src/apple.mjs
+          node --check src/server.mjs
