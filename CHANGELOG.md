@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented here.
 
+## 1.3.0 — 2026-09-19
+
+Behavior-aware two-stage curation and Apple Music delivery reliability.
+
+### Recommendation architecture
+
+- Added explicit **Candidate Generation → Set Reranking → Sequencing** stages.
+- Added a default 30–45 track internal candidate pool for a 14–16 track daily playlist.
+- Added recent-history cooldown: 30 days for the same track and a 7-day soft artist penalty when history is truly available.
+- Added recent-playlist **structure fingerprints** to reduce repeated language blocks, energy curves, opener/closer patterns, and artist ecosystems.
+- Added a 2–3 **melodic peak** target to prevent smooth-but-forgettable playlists.
+
+### Real listening signals
+
+- Added optional user-authorized Apple Music / MusicKit behavioral input.
+- Added normalized signal handling for recently played, ratings, favorites, library membership, Apple recommendations, and Replay summary data when available.
+- Added evidence precedence so explicit user feedback outranks passive listening behavior.
+- Added the rule **exposure is not preference** and **no feedback is unknown**.
+- Added `references/listening-signals.md` and `docs/musickit-bridge.md`.
+
+### Catalog and delivery reliability
+
+- Added duration and ISRC-aware recording identity checks.
+- Added explicit retry triggers for Live, Acoustic, Remix, Edit, Demo, Session, wrong artist, implausible date, and suspicious duration.
+- Added a replacement policy when the correct recording cannot be reliably locked into the final interactive component.
+- Added **Card Gate** and separate user-library write-back semantics so text never masquerades as a generated Apple Music component.
+
+### Regression coverage
+
+- Expanded evaluation cases for behavioral conflicts, missing feedback, structural repetition, smooth-but-forgettable sets, wrong-version fuzzy matches, card generation, partial telemetry, and authorized playlist write-back.
+
 ## 1.2.0 — 2026-08-22
 
 Dual-agent curation and product reliability review.
