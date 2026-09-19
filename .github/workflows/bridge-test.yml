@@ -6,7 +6,7 @@ on:
     paths:
       - "integrations/musickit-bridge/**"
       - ".github/workflows/bridge-test.yml"
-  pul_request:
+  pull_request:
     paths:
       - "integrations/musickit-bridge/**"
       - ".github/workflows/bridge-test.yml"
