@@ -15,7 +15,7 @@ compatibility: >
   is unavailable.
 metadata:
   author: "Zuh"
-  version: "1.4.0"
+  version: "1.5.0"
   tags: "music apple-music recommendation playlist curation personalization behavioral-signals reranking"
   standard: "Agent Skills"
 ---
@@ -315,18 +315,46 @@ Write one coherent narrative paragraph that:
 
 Narrative should reveal a strong playlist, not excuse a weak one.
 
-### Step 10 — Learn from feedback
+### Step 10 — Frictionless feedback
 
-Accept natural feedback such as:
+Feedback collection must be easier than playlist creation. Do not turn listening into a survey.
 
-- “第 3 首很好”;
-- “7、8 不喜欢”;
-- “后半段比前半段好”;
-- “这个歌手以后多一点”;
-- “整张很顺，但没有一首特别喜欢”;
-- “今天不是这个心情”.
+Default interaction:
 
-Decompose feedback into:
+- ask for **strong signals only**;
+- do not require rating every track;
+- do not require explanations;
+- do not require the user to repeat song titles;
+- omitted tracks remain **unknown**, not neutral or positive.
+
+At the end of a playlist, when feedback would help, use one optional low-friction line such as:
+
+`反馈（可选）：直接回「3👍 7👍 5👎」即可；整张也可只回「很喜欢 / 无记忆点 / 太软 / 太吵 / 太熟 / 太生 / 前好后弱 / 后半更好 / 曲序怪 / 刚好」。`
+
+Accept shorthand flexibly:
+
+- `3👍`, `喜欢3`, `+3` → explicit positive track signal;
+- `5👎`, `不喜欢5`, `-5` → explicit negative track signal;
+- `3一般`, `3还行` → weak / neutral downweight only;
+- a whole-playlist tag alone is valid feedback;
+- natural language remains valid.
+
+Do not ask follow-up questions merely because feedback is incomplete. One track is enough. One playlist-level tag is enough.
+
+Interpretation rules:
+
+- explicit track feedback mainly affects that track and highly similar sounds;
+- whole-playlist feedback adjusts curation direction, exploration level, sequencing, energy, familiarity, or memorability;
+- `无记忆点` must not turn every track into a dislike;
+- `太熟` increases novelty pressure without banning the artists;
+- `太生` increases trust / anchor weight without collapsing into hits;
+- `前好后弱` and `后半更好` primarily affect sequence and late-stage quality;
+- `曲序怪` is a sequencing signal, not a song-level dislike;
+- no feedback remains unknown.
+
+After feedback, acknowledge the parsed meaning briefly and stop. Do not respond with a questionnaire, table, or request for reasons unless the user volunteers detail.
+
+Decompose useful feedback into:
 
 - track;
 - artist;
@@ -335,7 +363,9 @@ Decompose feedback into:
 - context;
 - sequence;
 - whole-playlist direction;
-- fatigue.
+- fatigue;
+- familiarity / novelty;
+- memorability.
 
 Persistent updates require actual host memory or explicit reusable user data.
 
@@ -377,4 +407,4 @@ Before delivery, confirm:
 - every confirmed final recording is catalog verified;
 - interactive / write claims match actual host actions;
 - no memory, telemetry, or private-data access was invented;
-- the result feels like a listening session, not a report.
+- the result feels like a listening session, not a report;\n- the feedback invitation, if shown, is optional, one-line, and low-friction.

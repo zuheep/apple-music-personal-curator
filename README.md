@@ -2,7 +2,7 @@
 
 A portable Agent Skill that turns music recommendation into **curation**: multi-cluster taste modeling, user-authorized listening signals when available, two-stage candidate generation and reranking, novelty control, adaptive sequencing, catalog verification, delivery gates, and one immersive narrative.
 
-**Current version:** 1.4.0  
+**Current version:** 1.5.0  
 **License:** MIT  
 **Author:** Zuh
 
@@ -17,6 +17,27 @@ Apple Music Personal Curator treats recommendation as three linked problems:
 3. **Narrative** — what makes this listening session feel intentional?
 
 The goal is not “15 songs you will probably like.” The goal is a session that feels familiar enough to trust, adventurous enough to discover something, and coherent enough to finish.
+
+## What changed in v1.5
+
+v1.5 makes feedback deliberately easier than playlist creation.
+
+### Frictionless feedback
+
+Daily playlists may end with one optional line:
+
+`反馈（可选）：直接回「3👍 7👍 5👎」即可；整张也可只回「很喜欢 / 无记忆点 / 太软 / 太吵 / 太熟 / 太生 / 前好后弱 / 后半更好 / 曲序怪 / 刚好」。`
+
+The listener does **not** need to rate every track or explain why.
+
+- unmentioned tracks stay unknown;
+- one track signal is enough;
+- one whole-playlist tag is enough;
+- shorthand such as `+3`, `-5`, `喜欢3`, or `5不喜欢` is accepted;
+- playlist-level criticism changes curation / sequencing rather than being copied onto every track;
+- after feedback, the curator acknowledges briefly instead of starting a questionnaire.
+
+This keeps explicit feedback — the highest-quality free personalization signal — cheap enough to use repeatedly.
 
 ## What changed in v1.3\n\nv1.3 upgrades the project from a curation prompt into a clearer recommendation-system contract.\n\n### Real listening signals\n\nThe Skill can consume **user-authorized behavioral signals** when the host exposes them: recently played tracks/resources, personal ratings, favorites, library membership, Apple personalized recommendations, and Apple Music Replay summary data.\n\nThe key rule is: **exposure is not preference**. A recent play may indicate interest, habit, autoplay, testing, background use, or fatigue. Explicit user feedback remains higher priority.\n\nSee [references/listening-signals.md](references/listening-signals.md).\n\n### Two-stage curation\n\nFor a default one-hour playlist, the curator first builds roughly **30–45 candidates**, then reranks them into **14–16 final tracks** before sequencing.\n\n### Cooldown and structural novelty\n\nWhen trustworthy history exists, the default recommendation controls are **30 days for the same track** and a **7-day soft penalty for the same artist**. Recent playlists are also compared by a rough structure fingerprint: language mix, era distribution, style center, energy curve, opener/closer type, artist overlap, and density/texture pattern.\n\n### Melodic peaks\n\nA smooth playlist can still be forgettable. The default daily playlist should normally contain roughly **2–3 plausible melodic peaks** without turning into constant maximalist choruses.\n\n### Stronger Apple Music verification\n\nRecording verification now considers title, artist, album context, release date, duration, and **ISRC** when useful. Unexpected Live / Acoustic / Remix / Edit / Demo / Session results trigger reflective retry. If the final interactive component cannot reliably lock to the intended recording, replace the track rather than knowingly shipping a mismatch.\n\n### Delivery Gate\n\nThe Skill now distinguishes catalog verification, interactive Apple Music card generation, and user-library playlist write-back. A sentence saying “Open Playlist in Apple Music” is not proof that a card or playlist exists.\n\n## Core design
 
