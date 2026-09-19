@@ -1,10 +1,23 @@
 # Playlist Design Reference
 
-Read this file when generating candidates, selecting the final set, assigning track roles, sequencing the playlist, or writing the narrative.
+Read this file when generating candidates, reranking the final set, assigning track roles, sequencing the playlist, or writing the narrative.
 
-## 1. Start with a curatorial thesis
+## 1. Recommendation is a two-stage system
 
-Before selecting tracks, write one internal sentence that explains why this playlist should exist **today**.
+Do not generate the final playlist in one pass.
+
+Use:
+
+1. **Candidate Generation** — broad recall from several lanes;
+2. **Set Reranking + Sequencing** — select a coherent final set, then order it deliberately.
+
+This separation prevents the first plausible songs from becoming the final playlist by default.
+
+For a 14–16 track daily playlist, a useful internal pool is roughly **30–45 candidates**.
+
+## 2. Start with a curatorial thesis
+
+Before selecting final tracks, write one internal sentence that explains why this playlist should exist **today**.
 
 Examples of thesis shapes:
 
@@ -13,43 +26,95 @@ Examples of thesis shapes:
 - focused work music with human presence but low lyrical intrusion;
 - a bridge between two Taste Clusters that rarely appear together.
 
-Do not show the thesis unless useful. Its purpose is to prevent a set of individually good songs from becoming an incoherent playlist.
+Do not show the thesis unless useful. Its purpose is to stop a set of individually good songs from becoming an incoherent playlist.
 
-## 2. Candidate generation
+## 3. Candidate generation lanes
 
-Build a candidate pool substantially larger than the final playlist. Draw from multiple paths:
+Build the pool from multiple paths:
 
 1. **Anchor Recall** — explicit favorites and highly relevant works.
-2. **Adjacent Discovery** — one or two dimensions away from known taste: songwriting, melodic shape, instrumentation, production, era, emotional tone, producer, or scene.
+2. **Adjacent Discovery** — one or two dimensions away from known taste: melodic shape, instrumentation, production, era, emotional tone, producer, or scene.
 3. **Multi-interest Recall** — candidates from different Taste Clusters so one preference does not dominate.
 4. **Bridge Recall** — tracks that connect two Taste Clusters.
-5. **Long-tail Recall** — less obvious tracks with high fit; do not retreat to hits because of uncertainty.
-6. **Context Recall** — tracks that fit the current activity, time, or mood.
-7. **Serendipity Recall** — surprising but explainable tracks with at least one connection to known taste or the thesis.
+5. **Long-tail Recall** — less obvious tracks with high fit.
+6. **Context Recall** — tracks that fit current activity, time, or mood.
+7. **Behavior-neighbor Recall** — when real listening signals exist, use recently played / favorites / Replay as seeds for adjacent candidates rather than simply repeating them.
+8. **Serendipity Recall** — surprising but explainable tracks with at least one connection to known taste or the thesis.
 
-A discovery candidate should be explainable in at least one sentence internally. If the only reason is “it is obscure,” remove it.
+A discovery candidate should be explainable internally. If the only reason is “it is obscure,” remove it.
 
-## 3. Selection dimensions
+Apple personalized recommendations, when available, may be used as **one recall lane**, not as the final ranking.
+
+## 4. Structural novelty
+
+When recent playlist history exists, compare the last ~7 days before finalizing.
+
+Build a rough **structure fingerprint** from:
+
+- language mix;
+- era / decade distribution;
+- style center;
+- energy curve;
+- opener type;
+- closing type;
+- artist overlap;
+- density / texture pattern.
+
+The goal is not maximum difference. The goal is to prevent accidental template reuse.
+
+Failure example:
+
+- yesterday: bright English indie opener → Mandarin acoustic middle → Japanese band closer;
+- today: entirely different songs but the same language blocks, energy curve, and ending behavior.
+
+That is structurally repetitive even if no track repeats.
+
+## 5. Set reranking dimensions
 
 Evaluate candidates across:
 
-- Personal Fit
-- Short-term Fit
-- Context Fit
-- Discovery Value
-- Serendipity
-- Diversity Contribution
-- Transition Compatibility
-- Narrative Value
-- Catalog Confidence
+- Personal Fit;
+- Short-term Fit;
+- Context Fit;
+- first-listen melodic attraction;
+- Discovery Value;
+- Controlled Surprise;
+- Diversity Contribution;
+- Transition Compatibility;
+- Curatorial Thesis Fit;
+- Narrative Value;
+- Catalog Confidence.
 
-Apply penalties for recent repetition, artist saturation, genre or cluster saturation, overfamiliarity, fatigue, and uncertain catalog entities.
+Apply penalties for:
 
-Do not simply take the numerical Top N. Choose a strong set first, then sequence it.
+- recent track repetition;
+- recent artist repetition;
+- artist saturation;
+- cluster / genre saturation;
+- overfamiliarity;
+- fatigue;
+- “safe filler”;
+- weak version / catalog confidence.
 
-Diversity is not a checkbox. Do not insert a language, era, or genre merely to make the list look varied if it breaks the thesis.
+Do not simply take a numerical Top N.
 
-## 4. Track roles
+## 6. Melodic peaks
+
+A smooth playlist can still fail if nothing stands out.
+
+For a one-hour daily playlist, aim for roughly **2–3 plausible melodic peaks**: songs with a reasonable chance of producing “this one is special” rather than merely “this is fine.”
+
+These peaks should emerge naturally from the thesis and sequence. Do not force three maximalist choruses into the playlist.
+
+Useful peak types include:
+
+- unusually memorable melodic writing;
+- a strong but restrained emotional turn;
+- a fresh production idea that still serves the melody;
+- a surprising bridge between two familiar worlds;
+- a distinctive vocal / instrumental hook without excessive intensity.
+
+## 7. Track roles
 
 Use roles to reason about the set:
 
@@ -57,80 +122,106 @@ Use roles to reason about the set:
 - **Bridge** — connects different clusters, eras, languages, or production worlds.
 - **Pivot** — intentionally changes direction.
 - **Discovery** — expands the listener's taste map.
-- **Wildcard** — the highest-risk but still explainable choice.
+- **Wildcard** — highest-risk but still explainable choice.
+- **Peak** — likely memorability / attraction high point.
 - **Landing** — provides closure, release, or afterglow.
 
 Roles are soft. One track may serve multiple roles, and not every playlist needs every role.
 
-A strong playlist usually has at least one reliable entry point, one meaningful expansion, and one deliberate ending.
+## 8. Adaptive sequencing
 
-## 5. Adaptive sequencing
+For a default 14–16 track playlist:
 
-For a default 15-track playlist:
+### Act I — Entrance
 
-### Act I — Entrance (1–3)
+Track 1 and the first 3 establish trust and interest.
 
-Establish trust and entry. Include at least one high-confidence anchor. Track 1 is the best entrance, not necessarily the highest-scoring track.
+Track 1 is the best entrance, not necessarily the highest-scoring song.
 
-### Act II — Expansion (4–7)
+The first 3 should not all use the same timbre, language, or energy profile.
 
-Move gradually away from the most familiar area using relationships in sound, era, mood, songwriting, instrumentation, or production.
+### Act II — Expansion
 
-### Act III — Discovery (8–11)
+Move beyond the obvious using relationships in sound, era, mood, songwriting, instrumentation, or production.
 
-Place the strongest new finds and at least one Bridge, Pivot, or Serendipity moment. Discovery can appear earlier too; this act simply carries the highest exploratory weight.
+### Act III — Discovery / Pivot
 
-### Act IV — Landing (12–15)
+Place the strongest new finds and at least one Bridge, Pivot, Wildcard, or Peak.
 
-Create release, resolution, or afterglow. The final track must feel like an ending.
+Discovery can appear earlier; this section simply carries more exploratory weight.
 
-For other lengths, preserve the arc rather than exact positions:
+### Act IV — Landing
 
-- Entrance: ~15–20%
-- Expansion: ~25–30%
-- Discovery: ~25–30%
-- Landing: ~20–25%
+Keep quality high while creating release, resolution, or afterglow.
 
-For 5–7 tracks, compress into **Entry → Turn → Landing**. For long playlists, use chapters while preserving a recognizable global arc.
+The final track must feel like an ending.
 
-## 6. Transition strategies
+For other lengths, preserve the arc rather than exact positions.
 
-For adjacent tracks consider energy, perceived tempo, instrumentation, vocal texture, language, production density, emotional direction, era, and intro / outro character.
+## 9. Transition strategies
+
+For adjacent tracks consider:
+
+- energy;
+- perceived tempo;
+- instrumentation;
+- vocal texture;
+- language;
+- production density;
+- emotional direction;
+- era;
+- intro / outro character.
 
 Use one of four transition intentions:
 
 - **Blend** — continuity in texture, rhythm, harmony, or emotional temperature.
-- **Lift** — a controlled increase in energy, brightness, scale, or rhythmic presence.
-- **Contrast** — a deliberate difference that creates attention or emotional reframing.
-- **Reset** — a purposeful clearing of density or mood before a new chapter.
+- **Lift** — controlled increase in energy, brightness, scale, or rhythmic presence.
+- **Contrast** — deliberate difference that creates attention or reframing.
+- **Reset** — purposeful clearing of density or mood before a new chapter.
 
-Avoid long runs of nearly identical tracks and large unprepared jumps. Contrast is valuable when it serves the thesis; random whiplash is not.
+Avoid long runs of nearly identical tracks and large unprepared jumps.
 
-## 7. Context-specific sequencing
+## 10. Language transitions
+
+Do not organize by nationality merely for neatness.
+
+Cross-language transitions should be justified by at least one bridge:
+
+- compatible melodic contour;
+- related rhythm / pulse;
+- similar vocal intimacy;
+- compatible instrumentation;
+- complementary emotional temperature;
+- useful contrast after a deliberate reset.
+
+Avoid mechanical “English block → Mandarin block → Japanese block” unless the thesis genuinely calls for it.
+
+## 11. Context-specific sequencing
 
 The listening function changes what counts as a good transition.
 
 Examples:
 
-- **Focus / work:** avoid repeated lyrical spikes, extreme dynamic changes, and attention-demanding pivots unless requested.
-- **Commute:** moderate contrast can help maintain attention; preserve a sense of movement.
-- **Workout:** energy continuity and rhythmic propulsion matter more than subtle tonal blending.
-- **Late night / reflective:** allow longer decays, lower-density transitions, and more fragile endings.
-- **Active discovery:** tolerate more pivots and unfamiliar textures while preserving explainable bridges.
+- **Focus / work:** avoid repeated lyrical spikes and extreme dynamic changes.
+- **Commute:** moderate contrast can maintain attention.
+- **Workout:** energy continuity and rhythmic propulsion matter more.
+- **Late night / reflective:** allow lower-density transitions and fragile endings.
+- **Active discovery:** tolerate more pivots while preserving explainable bridges.
 
-## 8. Narrative engine
+## 12. Narrative engine
 
 Every playlist gets a distinctive title and one coherent narrative paragraph.
 
-Avoid generic titles such as “Today’s Picks”, “Healing Playlist”, “Good English Songs”, or “Weekend Music”. Prefer a scene, time, image, musical relationship, or emotional movement specific to this playlist.
+Avoid generic titles such as “Today’s Picks”, “Healing Playlist”, “Good English Songs”, or “Weekend Music”.
+
+Prefer a scene, image, time, musical relationship, or emotional movement specific to the session.
 
 The narrative should:
 
 - establish a scene;
-- naturally mention 3–6 key tracks or artists;
 - explain why these sounds meet;
-- use verified album, era, production, or music-history facts only when helpful;
-- hint at the pivot and landing;
-- leave interpretive space for the listener.
+- use verified facts only when factual claims are needed;
+- hint at the turn and landing;
+- leave interpretive space.
 
-Sonic observations can be descriptive without external factual claims. Do not invent creation stories, artist relationships, release facts, or song meanings.
+Narrative is applied after selection and sequencing. It must never be used to justify a weak sequence after the fact.
