@@ -276,3 +276,54 @@ Apple returns a set of personalized recommendations.
 - use them as one candidate source;
 - rerank them with the curator's own taste, novelty, sequence, cooldown, and catalog rules;
 - do not assume Apple's order is the final playlist order.
+
+
+## Case 21 — Minimal track feedback
+
+**Input**
+
+> 3👍 7👍 5👎
+
+**Expected behavior**
+
+- parse tracks 3 and 7 as explicit positive signals;
+- parse track 5 as an explicit negative signal;
+- leave every unmentioned track unknown;
+- acknowledge briefly without asking for ratings on the remaining tracks.
+
+## Case 22 — Whole-playlist tag only
+
+**Input**
+
+> 无记忆点
+
+**Expected behavior**
+
+- treat this as whole-playlist feedback;
+- do not convert every track into a dislike;
+- increase the next playlist's memorability / melodic-peak pressure while preserving flow;
+- do not ask which tracks were bad.
+
+## Case 23 — Sequence-only feedback
+
+**Input**
+
+> 前好后弱
+
+**Expected behavior**
+
+- preserve song-level uncertainty unless other feedback exists;
+- strengthen late-stage selection quality and sequencing;
+- do not infer that all songs in the second half are disliked.
+
+## Case 24 — One signal is enough
+
+**Input**
+
+> 8不喜欢
+
+**Expected behavior**
+
+- record only track 8 as an explicit negative;
+- do not ask why unless the user volunteers a reason;
+- do not request a complete survey or force the user to classify the other tracks.
